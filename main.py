@@ -1,0 +1,1 @@
+print("The main file has been successfully created!")
