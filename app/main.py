@@ -1,0 +1,55 @@
+from geo_engine import get_coordinates
+from time_utils import convert_to_utc, get_julian_day
+from chart_engine import get_moon_longitude, get_raasi_from_longitude
+from nakshathra_engine import get_nakshathra
+from lagna_engine import get_lagna
+
+from constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
+
+import swisseph as swe
+swe.set_sid_mode(swe.SIDM_LAHIRI)
+
+
+# ---------------- INPUT ----------------
+date = input("Enter birth date (YYYY-MM-DD): ")
+time = input("Enter birth time (HH:MM): ")
+place = input("Enter birth place: ")
+timezone = input("Enter timezone (IST/UTC/+5.5): ")
+
+# ---------------- GEO ----------------
+lat, lon = get_coordinates(place)
+
+# ---------------- TIME ----------------
+utc_time = convert_to_utc(date, time, timezone)
+jd = get_julian_day(utc_time)
+
+# ---------------- ASTRO ----------------
+swe.set_sid_mode(swe.SIDM_LAHIRI)
+
+moon_lon = get_moon_longitude(jd)
+raasi = get_raasi_from_longitude(moon_lon)
+
+nakshathra, paadha = get_nakshathra(moon_lon)
+
+lagna_lon = get_lagna(jd, lat, lon)
+lagna_raasi = get_raasi_from_longitude(lagna_lon)
+
+# ---------------- TAMIL ----------------
+tamil_raasi = RAASI_TAMIL[raasi]
+tamil_lagna = RAASI_TAMIL[lagna_raasi]
+tamil_nakshathra = NAKSHATHRA_TAMIL[nakshathra]
+
+# ---------------- OUTPUT ----------------
+print("\n🌌 Raasi:", raasi)
+print("🇮🇳 Tamil Raasi:", tamil_raasi)
+
+print("\n🌙 Nakshathra:", nakshathra)
+print("🇮🇳 Tamil Nakshathra:", tamil_nakshathra)
+print("🔢 Paadha:", paadha)
+
+print("\n🌅 Lagna:", lagna_raasi)
+print("🇮🇳 Tamil Lagna:", tamil_lagna)
+print("DEBUG JD:", jd)
+print("DEBUG LAT/LON:", lat, lon)
+print("DEBUG LAGNA DEG:", lagna_lon)
+print("Lagna Sign Index:", int(lagna_lon // 30))
