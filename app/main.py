@@ -1,14 +1,18 @@
 from geo_engine import get_coordinates
 from time_utils import convert_to_utc, get_julian_day
+
 from chart_engine import get_moon_longitude, get_raasi_from_longitude
 from nakshathra_engine import get_nakshathra
 from lagna_engine import get_lagna
 
 from constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
 
-import swisseph as swe
-swe.set_sid_mode(swe.SIDM_LAHIRI)
+from planet_engine import get_all_planets
+from house_engine import get_house_number
 
+import swisseph as swe
+
+swe.set_sid_mode(swe.SIDM_LAHIRI)
 
 # ---------------- INPUT ----------------
 date = input("Enter birth date (YYYY-MM-DD): ")
@@ -23,12 +27,10 @@ lat, lon = get_coordinates(place)
 utc_time = convert_to_utc(date, time, timezone)
 jd = get_julian_day(utc_time)
 
-# ---------------- ASTRO ----------------
-swe.set_sid_mode(swe.SIDM_LAHIRI)
-
+# ---------------- ASTRO (MOON + BASIC) ----------------
 moon_lon = get_moon_longitude(jd)
-raasi = get_raasi_from_longitude(moon_lon)
 
+raasi = get_raasi_from_longitude(moon_lon)
 nakshathra, paadha = get_nakshathra(moon_lon)
 
 lagna_lon = get_lagna(jd, lat, lon)
@@ -39,7 +41,7 @@ tamil_raasi = RAASI_TAMIL[raasi]
 tamil_lagna = RAASI_TAMIL[lagna_raasi]
 tamil_nakshathra = NAKSHATHRA_TAMIL[nakshathra]
 
-# ---------------- OUTPUT ----------------
+# ---------------- OUTPUT BASIC ----------------
 print("\n🌌 Raasi:", raasi)
 print("🇮🇳 Tamil Raasi:", tamil_raasi)
 
@@ -49,7 +51,21 @@ print("🔢 Paadha:", paadha)
 
 print("\n🌅 Lagna:", lagna_raasi)
 print("🇮🇳 Tamil Lagna:", tamil_lagna)
-print("DEBUG JD:", jd)
+
+# ---------------- DEBUG ----------------
+print("\nDEBUG JD:", jd)
 print("DEBUG LAT/LON:", lat, lon)
 print("DEBUG LAGNA DEG:", lagna_lon)
-print("Lagna Sign Index:", int(lagna_lon // 30))
+
+# ---------------- PLANETS ----------------
+planet_positions = get_all_planets(jd)
+
+print("\n🪐 PLANETARY POSITIONS (WITH HOUSES)\n")
+
+for planet, lon in planet_positions.items():
+
+    planet_raasi = get_raasi_from_longitude(lon)
+
+    house = get_house_number(lagna_raasi, planet_raasi)
+
+    print(f"{planet}: {planet_raasi} → House {house}")
