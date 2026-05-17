@@ -9,6 +9,7 @@ from constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
 
 from planet_engine import get_all_planets
 from house_engine import get_house_number
+from house_meanings import HOUSE_MEANINGS
 
 import swisseph as swe
 
@@ -68,4 +69,7 @@ for planet, lon in planet_positions.items():
 
     house = get_house_number(lagna_raasi, planet_raasi)
 
-    print(f"{planet}: {planet_raasi} → House {house}")
+    meaning = HOUSE_MEANINGS[house]
+
+print(f"{planet}: {planet_raasi} → House {house}")
+print(f"   Meaning: {meaning}\n")
