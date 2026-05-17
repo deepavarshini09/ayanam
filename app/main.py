@@ -1,7 +1,7 @@
 from geo_engine import get_coordinates
 from time_utils import convert_to_utc, get_julian_day
 
-from chart_engine import get_moon_longitude, get_raasi_from_longitude
+from chart_engine import get_raasi_from_longitude
 from nakshathra_engine import get_nakshathra
 from lagna_engine import get_lagna
 
@@ -10,16 +10,23 @@ from constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
 from planet_engine import get_all_planets
 from house_engine import get_house_number
 from house_meanings import HOUSE_MEANINGS
+from chart_view import build_house_chart, print_chart
+from house_strength import get_house_strength, print_house_strength
+
+from chart_view import build_house_chart, print_chart
+from house_strength import get_house_strength, print_house_strength
+from prediction_engine import generate_predictions
+
+from test_cases import TEST_CASE_1
 
 import swisseph as swe
-
 swe.set_sid_mode(swe.SIDM_LAHIRI)
 
-# ---------------- INPUT ----------------
-date = input("Enter birth date (YYYY-MM-DD): ")
-time = input("Enter birth time (HH:MM): ")
-place = input("Enter birth place: ")
-timezone = input("Enter timezone (IST/UTC/+5.5): ")
+# ---------------- TEST INPUT ----------------
+date = TEST_CASE_1["date"]
+time = TEST_CASE_1["time"]
+place = TEST_CASE_1["place"]
+timezone = TEST_CASE_1["timezone"]
 
 # ---------------- GEO ----------------
 lat, lon = get_coordinates(place)
@@ -28,12 +35,16 @@ lat, lon = get_coordinates(place)
 utc_time = convert_to_utc(date, time, timezone)
 jd = get_julian_day(utc_time)
 
-# ---------------- ASTRO (MOON + BASIC) ----------------
-moon_lon = get_moon_longitude(jd)
+# ---------------- PLANETS ----------------
+planet_positions = get_all_planets(jd)
+
+# ---------------- MOON ----------------
+moon_lon = planet_positions["Moon"]
 
 raasi = get_raasi_from_longitude(moon_lon)
 nakshathra, paadha = get_nakshathra(moon_lon)
 
+# ---------------- LAGNA ----------------
 lagna_lon = get_lagna(jd, lat, lon)
 lagna_raasi = get_raasi_from_longitude(lagna_lon)
 
@@ -58,18 +69,31 @@ print("\nDEBUG JD:", jd)
 print("DEBUG LAT/LON:", lat, lon)
 print("DEBUG LAGNA DEG:", lagna_lon)
 
-# ---------------- PLANETS ----------------
-planet_positions = get_all_planets(jd)
-
+# ---------------- HOUSE DATA PREP ----------------
 print("\n🪐 PLANETARY POSITIONS (WITH HOUSES)\n")
 
-for planet, lon in planet_positions.items():
+house_map = build_house_chart(
+    planet_positions,
+    lagna_raasi,
+    get_raasi_from_longitude,
+    get_house_number
+)
 
-    planet_raasi = get_raasi_from_longitude(lon)
+print_chart(house_map)
 
-    house = get_house_number(lagna_raasi, planet_raasi)
+# ---------------- HOUSE STRENGTH ----------------
+strength = get_house_strength(house_map)
+print_house_strength(strength, HOUSE_MEANINGS)
 
-    meaning = HOUSE_MEANINGS[house]
+# ---------------- ASPECTS ----------------
+house_map = build_house_chart(
+    planet_positions,
+    lagna_raasi,
+    get_raasi_from_longitude,
+    get_house_number
+)
 
-print(f"{planet}: {planet_raasi} → House {house}")
-print(f"   Meaning: {meaning}\n")
+strength = get_house_strength(house_map)
+print_house_strength(strength, HOUSE_MEANINGS)
+
+generate_predictions(house_map, strength)
