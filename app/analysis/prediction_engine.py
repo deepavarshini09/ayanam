@@ -18,3 +18,4 @@ def generate_predictions(house_map, strength):
 
         if house == 10 and len(planets) >= 2:
             print("💼 Career focus and visibility increases")
+            

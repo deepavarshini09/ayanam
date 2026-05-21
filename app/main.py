@@ -1,26 +1,25 @@
-from geo_engine import get_coordinates
-from time_utils import convert_to_utc, get_julian_day
+from app.core.geo_engine import get_coordinates
+from app.core.time_utils import convert_to_utc, get_julian_day
 
-from chart_engine import get_raasi_from_longitude
-from nakshathra_engine import get_nakshathra
-from lagna_engine import get_lagna
+from app.core.chart_engine import get_raasi_from_longitude
+from app.core.nakshathra_engine import get_nakshathra
+from app.core.lagna_engine import get_lagna
 
-from constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
+from app.core.planet_engine import get_all_planets
+from app.core.house_engine import get_house_number
 
-from planet_engine import get_all_planets
-from house_engine import get_house_number
-from house_meanings import HOUSE_MEANINGS
-from chart_view import build_house_chart, print_chart
-from house_strength import get_house_strength, print_house_strength
+from app.data.constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
+from app.data.house_meanings import HOUSE_MEANINGS
+from app.data.test_cases import TEST_CASE_1
 
-from chart_view import build_house_chart, print_chart
-from house_strength import get_house_strength, print_house_strength
-from prediction_engine import generate_predictions
+from app.presentation.chart_view import build_house_chart, print_chart
 
-from test_cases import TEST_CASE_1
+from app.analysis.house_strength import get_house_strength, print_house_strength
+from app.analysis.prediction_engine import generate_predictions
 
 import swisseph as swe
 swe.set_sid_mode(swe.SIDM_LAHIRI)
+
 
 # ---------------- TEST INPUT ----------------
 date = TEST_CASE_1["date"]
@@ -53,7 +52,7 @@ tamil_raasi = RAASI_TAMIL[raasi]
 tamil_lagna = RAASI_TAMIL[lagna_raasi]
 tamil_nakshathra = NAKSHATHRA_TAMIL[nakshathra]
 
-# ---------------- OUTPUT BASIC ----------------
+# ---------------- OUTPUT ----------------
 print("\n🌌 Raasi:", raasi)
 print("🇮🇳 Tamil Raasi:", tamil_raasi)
 
@@ -69,9 +68,7 @@ print("\nDEBUG JD:", jd)
 print("DEBUG LAT/LON:", lat, lon)
 print("DEBUG LAGNA DEG:", lagna_lon)
 
-# ---------------- HOUSE DATA PREP ----------------
-print("\n🪐 PLANETARY POSITIONS (WITH HOUSES)\n")
-
+# ---------------- HOUSE MAP ----------------
 house_map = build_house_chart(
     planet_positions,
     lagna_raasi,
@@ -85,15 +82,5 @@ print_chart(house_map)
 strength = get_house_strength(house_map)
 print_house_strength(strength, HOUSE_MEANINGS)
 
-# ---------------- ASPECTS ----------------
-house_map = build_house_chart(
-    planet_positions,
-    lagna_raasi,
-    get_raasi_from_longitude,
-    get_house_number
-)
-
-strength = get_house_strength(house_map)
-print_house_strength(strength, HOUSE_MEANINGS)
-
+# ---------------- PREDICTIONS ----------------
 generate_predictions(house_map, strength)

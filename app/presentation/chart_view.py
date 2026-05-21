@@ -1,4 +1,4 @@
-from house_meanings import HOUSE_MEANINGS
+from app.data.house_meanings import HOUSE_MEANINGS
 
 
 def build_house_chart(planet_positions, lagna_raasi, get_raasi_from_longitude, get_house_number):
