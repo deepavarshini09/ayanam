@@ -17,6 +17,8 @@ from app.presentation.chart_view import build_house_chart, print_chart
 from app.analysis.house_strength import get_house_strength, print_house_strength
 from app.analysis.prediction_engine import generate_predictions
 
+from app.dasha.dasha_engine import generate_dasha_table, print_dasha
+
 import swisseph as swe
 swe.set_sid_mode(swe.SIDM_LAHIRI)
 
@@ -84,3 +86,7 @@ print_house_strength(strength, HOUSE_MEANINGS)
 
 # ---------------- PREDICTIONS ----------------
 generate_predictions(house_map, strength)
+
+# ---------------- DASHA ----------------
+dasha_timeline = generate_dasha_table(nakshathra)
+print_dasha(dasha_timeline) 
