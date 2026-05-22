@@ -19,6 +19,11 @@ from app.analysis.prediction_engine import generate_predictions
 
 from app.dasha.dasha_engine import generate_dasha_table, print_dasha
 
+from app.dasha.antardasha_engine import (
+    generate_antardasha,
+    print_antardasha
+)
+
 import swisseph as swe
 swe.set_sid_mode(swe.SIDM_LAHIRI)
 
@@ -90,3 +95,15 @@ generate_predictions(house_map, strength)
 # ---------------- DASHA ----------------
 dasha_timeline = generate_dasha_table(nakshathra)
 print_dasha(dasha_timeline) 
+
+# ---------------- ANTARDASHA ----------------
+
+first_dasha = dasha_timeline[0]["planet"]
+first_years = dasha_timeline[0]["end"] - dasha_timeline[0]["start"]
+
+antardashas = generate_antardasha(
+    first_dasha,
+    first_years
+)
+
+print_antardasha(antardashas)
