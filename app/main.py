@@ -24,6 +24,11 @@ from app.dasha.antardasha_engine import (
     print_antardasha
 )
 
+from app.analysis.prediction_engine_v2 import (
+    generate_deep_predictions,
+    print_deep_predictions
+)
+
 import swisseph as swe
 swe.set_sid_mode(swe.SIDM_LAHIRI)
 
@@ -107,3 +112,17 @@ antardashas = generate_antardasha(
 )
 
 print_antardasha(antardashas)
+
+# ---------------- DEEP INSIGHTS ----------------
+
+first_antardasha = antardashas[0]["antardasha"]
+
+preds = generate_deep_predictions(
+    first_dasha,
+    first_antardasha,
+    house_map,
+    HOUSE_MEANINGS,
+    get_house_strength
+)
+
+print_deep_predictions(preds)
