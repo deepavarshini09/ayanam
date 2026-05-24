@@ -13,9 +13,12 @@ def generate_deep_predictions(
     ant_house = None
 
     for h, planets in house_map.items():
+
         for p in planets:
+
             if mahadasha in p:
                 mah_house = h
+
             if antardasha in p:
                 ant_house = h
 
@@ -23,34 +26,62 @@ def generate_deep_predictions(
 
     predictions = []
 
-    # MAIN INTERPRETATION
-    predictions.append(
-        f"{mahadasha} Mahadasha activates {house_meanings.get(mah_house)}"
-    )
+    # ---------------- MAIN PERIOD ----------------
 
     predictions.append(
-        f"{antardasha} Antardasha modifies with {house_meanings.get(ant_house)} energy"
+        f"{mahadasha} Mahadasha strongly activates "
+        f"House {mah_house} themes: "
+        f"{house_meanings.get(mah_house)}."
     )
 
-    # PLANET NATURE
+    # ---------------- ANTARDASHA EFFECT ----------------
+
+    if mahadasha != antardasha:
+
+        predictions.append(
+            f"{antardasha} Antardasha brings additional focus on "
+            f"House {ant_house}: "
+            f"{house_meanings.get(ant_house)}."
+        )
+
+    else:
+
+        predictions.append(
+            f"This is a pure {mahadasha}/{antardasha} phase, "
+            f"making its effects highly intensified."
+        )
+
+    # ---------------- PLANET NATURE ----------------
+
     predictions.append(
-        f"{mahadasha} nature: {PLANET_MEANINGS.get(mahadasha)}"
+        f"{mahadasha} influence indicates "
+        f"{PLANET_MEANINGS.get(mahadasha)}."
     )
 
-    predictions.append(
-        f"{antardasha} nature: {PLANET_MEANINGS.get(antardasha)}"
-    )
+    if mahadasha != antardasha:
 
-    # HOUSE STRENGTH EFFECT
+        predictions.append(
+            f"{antardasha} modifies the period through "
+            f"{PLANET_MEANINGS.get(antardasha)}."
+        )
+
+    # ---------------- HOUSE STRENGTH ----------------
+
     if mah_house in strength:
-        predictions.append(
-            f"House {mah_house} strength: {strength[mah_house]}"
-        )
 
-    if ant_house in strength:
-        predictions.append(
-            f"House {ant_house} strength: {strength[ant_house]}"
-        )
+        level = strength[mah_house]
+
+        if level >= 2:
+
+            predictions.append(
+                f"House {mah_house} is strongly activated in the chart."
+            )
+
+        else:
+
+            predictions.append(
+                f"House {mah_house} has moderate activation."
+            )
 
     return predictions
 

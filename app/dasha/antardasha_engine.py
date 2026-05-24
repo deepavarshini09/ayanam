@@ -1,51 +1,73 @@
-from app.dasha.dasha_engine import DASHA_SEQUENCE, DASHA_YEARS
+from app.data.constants import DASHA_YEARS
 
 
-def generate_antardasha(mahadasha_planet, mahadasha_years):
-    """
-    Generates Antardasha periods within a Mahadasha
-    """
+def generate_antardasha(
+    mahadasha,
+    total_years,
+    start_age=0
+):
 
-    antardashas = []
+    antardasha_list = []
 
-    total_cycle = 120
-
-    start_index = DASHA_SEQUENCE.index(mahadasha_planet)
-
-    rotated_sequence = (
-        DASHA_SEQUENCE[start_index:]
-        + DASHA_SEQUENCE[:start_index]
+    planets = list(
+        DASHA_YEARS.keys()
     )
 
-    current = 0
+    start_index = planets.index(
+        mahadasha
+    )
 
-    for planet in rotated_sequence:
+    ordered_planets = (
+        planets[start_index:]
+        +
+        planets[:start_index]
+    )
+
+    current = start_age
+
+    for planet in ordered_planets:
 
         duration = (
-            mahadasha_years
-            * DASHA_YEARS[planet]
-        ) / total_cycle
+            total_years
+            *
+            DASHA_YEARS[planet]
+            / 120
+        )
 
-        antardashas.append({
-            "mahadasha": mahadasha_planet,
+        antardasha_list.append({
+
+            "mahadasha": mahadasha,
+
             "antardasha": planet,
+
             "start": round(current, 2),
-            "end": round(current + duration, 2)
+
+            "end": round(
+                current + duration,
+                2
+            )
         })
 
         current += duration
 
-    return antardashas
+    return antardasha_list
 
 
-def print_antardasha(antardashas):
+def print_antardasha(
+    antardashas
+):
 
     print("\n🔹 ANTARDASHA PERIODS\n")
 
-    for a in antardashas:
+    for d in antardashas:
 
         print(
-            f"{a['mahadasha']} / "
-            f"{a['antardasha']} : "
-            f"{a['start']} - {a['end']} years"
+
+            f"{d['mahadasha']} / "
+
+            f"{d['antardasha']} : "
+
+            f"{d['start']} - "
+
+            f"{d['end']} years"
         )
