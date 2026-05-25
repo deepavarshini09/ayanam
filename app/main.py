@@ -290,10 +290,10 @@ ant_house = dasha_result["antara_house"]
 
 events = classify_events(
     mah_house,
-    ant_house
+    ant_house,
+    current_mahadasha,
+    current_antardasha_name
 )
-
-print_events(events)
 
 # ---------------- EVENT INTENSITY ----------------
 
