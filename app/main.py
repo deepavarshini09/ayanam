@@ -63,6 +63,11 @@ from app.dasha.current_dasha import (
     find_current_antardasha
 )
 
+from app.analysis.prediction_synthesizer import (
+    synthesize_prediction,
+    print_synthesized_predictions
+)
+
 import swisseph as swe
 
 swe.set_sid_mode(swe.SIDM_LAHIRI)
@@ -308,4 +313,19 @@ level = classify_intensity(score)
 print_intensity(
     score,
     level
+)
+
+# ---------------- SYNTHESIZED PREDICTIONS ----------------
+
+synth_predictions = synthesize_prediction(
+
+    current_mahadasha,
+    current_antardasha_name,
+
+    mah_house,
+    ant_house
+)
+
+print_synthesized_predictions(
+    synth_predictions
 )
