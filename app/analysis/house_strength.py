@@ -1,29 +1,19 @@
-# app/analysis/house_strength.py
-
 from app.core.aspect_engine import get_aspect_strength
 
 
 def get_house_strength(house_map):
-    """
-    Returns combined strength per house:
-    occupancy (planets present) + aspect influence.
-
-    Occupancy counts full (weight 1 per planet).
-    Aspects count half (weight 0.5 per aspecting planet)
-    since presence is stronger than aspect in Jyotish.
-    """
 
     aspect_strength = get_aspect_strength(house_map)
 
     strength = {}
 
-    for house, planets in house_map.items():
+    for house, entries in house_map.items():
 
-        occupancy = len(planets)
+        # entries are (planet, raasi) tuples
+        occupancy = len(entries)
 
         aspect = aspect_strength.get(house, 0)
 
-        # Combined score: occupancy + half aspect weight
         strength[house] = round(
             occupancy + (aspect * 0.5), 1
         )
