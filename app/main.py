@@ -7,6 +7,7 @@ from app.core.lagna_engine import get_lagna
 
 from app.core.planet_engine import get_all_planets
 from app.core.house_engine import get_house_number
+from app.core.aspect_engine import print_aspects
 
 from app.data.constants import RAASI_TAMIL, NAKSHATHRA_TAMIL
 from app.data.house_meanings import HOUSE_MEANINGS
@@ -164,6 +165,10 @@ house_map = build_house_chart(
 
 print_chart(house_map)
 
+# ---------------- ASPECTS ----------------
+
+print_aspects(house_map, HOUSE_MEANINGS)
+
 # ---------------- HOUSE STRENGTH ----------------
 
 strength = get_house_strength(
@@ -192,13 +197,7 @@ print_dasha(dasha_timeline)
 
 # ---------------- CURRENT AGE ----------------
 
-birth_year = int(
-    date.split("-")[0]
-)
-
-current_age = get_current_age(
-    birth_year
-)
+current_age = get_current_age(date)
 
 # ---------------- CURRENT MAHADASHA ----------------
 
